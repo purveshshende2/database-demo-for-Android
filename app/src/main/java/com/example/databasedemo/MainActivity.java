@@ -14,26 +14,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SQLiteDatabase myDatabase = this.openOrCreateDatabase("Users",MODE_PRIVATE,null); //this line create database or open a already exist database
+      try {
+          SQLiteDatabase sqLiteDatabase = this.openOrCreateDatabase("Events",MODE_PRIVATE,null);
 
-        myDatabase.execSQL("CREATE TABLE IF NOT EXISTS users(name VARCHAR, age INT(3))");
-        myDatabase.execSQL("INSERT INTO users(name, age) VALUES ('Purvesh',19)");
-        myDatabase.execSQL("INSERT INTO users(name,age) VALUES ('Pawan',19)");
+          sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS events(name VARCHAR,year INT(4))");
+          sqLiteDatabase.execSQL("INSERT INTO events (name,year) VALUES('Milenium',2000)");
+          sqLiteDatabase.execSQL("INSERT INTO events (name,year) VALUES('code',2018)");
 
-        Cursor c = myDatabase.rawQuery("SELECT * FROM users",null);
+          Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM events", null);
 
-        int nameIndex = c.getColumnIndex("name");
-        int ageIndex = c.getColumnIndex("age");
+          int nameIndex = c.getColumnIndex("name");
+          int yearIndex = c.getColumnIndex("year");
+
+          c.moveToFirst();
+          while (c !=null){
+              Log.i("Results - event",c.getString(nameIndex));
+              Log.i("Results year",Integer.toString(c.getInt(yearIndex)));
+
+              c.moveToNext();
+          }
 
 
-        c.moveToFirst();
-
-        // we want loop through each row inside of the table
-        while (c != null){
-            Log.i("name",c.getString(nameIndex));
-            Log.i("age",c.getString(ageIndex));
-
-            c.moveToNext();
-        }
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
     }
 }
